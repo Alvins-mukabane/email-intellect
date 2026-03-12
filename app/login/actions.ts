@@ -1,5 +1,7 @@
 'use server';
 
+import { createServerActionClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import { supabase } from '../../lib/supabase';
 import { redirect } from 'next/navigation';
 
@@ -39,17 +41,33 @@ export async function login(formData: FormData) {
   redirect('/dashboard');
 }
 export async function signInWithGoogle() {
+  const supabase = createServerActionClient({ cookies });
+  
+  // Use a variable for the site URL to make it easier to switch between local and prod
+  const getURL = () => {
+    let url =
+      process?.env?.NEXT_PUBLIC_SITE_URL ?? // Set this in Vercel later
+      process?.env?.NEXT_PUBLIC_VERCEL_URL ?? // Automatically set by Vercel
+      'http://localhost:3000/';
+    // Make sure to include `https://` when not localhost.
+    url = url.includes('http') ? url : `https://${url}`;
+    // Make sure to include a trailing `/`.
+    url = url.charAt(url.length - 1) === '/' ? url : `${url}/`;
+    return url;
+  };
+
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
       scopes: 'https://www.googleapis.com/auth/gmail.readonly',
-      redirectTo: `http://localhost:3000/api/auth/callback`,
+      queryParams: {
+        access_type: 'offline',
+        prompt: 'consent',
+      },
+      redirectTo: `${getURL()}api/auth/callback`, // This is the fix
     },
   });
 
   if (error) throw error;
-
-  if (data.url) {
-    return redirect(data.url); // Use 'return' here
-  }
+  if (data.url) return redirect(data.url);
 }
