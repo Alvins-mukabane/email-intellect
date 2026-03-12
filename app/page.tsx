@@ -3,15 +3,13 @@ export const dynamic = 'force-static';
 
 import Link from 'next/link';
 import { SparklesCore } from '@/components/ui/sparkles'; // We'll create this helper next
-import { FlipWords } from '@/components/ui/flip-words'; // And this one too
 
 export default function HomePage() {
-  const words = ["summarize", "prioritize", "extract"];
 
   return (
-    <div className="relative min-h-screen bg-[#0a0a0a] text-zinc-100 flex flex-col items-center justify-center p-4 overflow-hidden">
-      {/* Background Sparkles Effect */}
-      <div className="w-full absolute inset-0 h-screen">
+    <div className="relative min-h-screen bg-gradient-to-b from-blue-600 via-indigo-700 to-purple-800 text-white overflow-x-hidden">
+      {/* Hero Section with sparkles */}
+      <div className="absolute inset-0 z-0">
         <SparklesCore
           id="tsparticlesfullpage"
           background="transparent"
@@ -23,25 +21,66 @@ export default function HomePage() {
         />
       </div>
 
-      {/* Hero Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center text-center max-w-4xl mx-auto">
-        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-4 text-white">
-          Your AI Executive Assistant to <br />
-          <FlipWords words={words} className="text-blue-500" /> Emails.
+      <header className="relative z-10 flex flex-col items-center justify-center text-center py-24 px-4">
+        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-4">
+          Supercharge Your Inbox with AI
         </h1>
-        <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl leading-relaxed">
-          Stop drowning in your inbox. Get instant summaries, critical action items, 
-          and identify key opportunities, all powered by AI.
+        <p className="text-lg md:text-2xl mb-8 max-w-3xl">
+          Let AI manage your emails. Get summaries, task lists, and key opportunities instantly.
         </p>
-        <Link 
-          href="/login" 
-          prefetch={true} // Crucial for millisecond loading to login page
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-xl text-lg shadow-lg shadow-blue-500/30 transition-all duration-300 transform hover:-translate-y-1"
+        <Link
+          href="/login"
+          prefetch={true}
+          className="inline-block bg-white text-blue-700 font-bold py-3 px-8 rounded-full text-lg shadow-lg transition-transform hover:scale-105"
         >
-          Get Started for Free
+          Connect Your Gmail
         </Link>
-        <p className="mt-4 text-xs text-gray-500">No credit card required.</p>
-      </div>
+      </header>
+
+      {/* Features Section */}
+      <section className="relative z-10 py-20 px-4 bg-white text-blue-900">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="p-6 bg-gray-50 rounded-lg shadow">
+            <h3 className="font-semibold text-xl mb-2">AI-Powered Summaries</h3>
+            <p>Get concise summaries of your important emails.</p>
+          </div>
+          <div className="p-6 bg-gray-50 rounded-lg shadow">
+            <h3 className="font-semibold text-xl mb-2">Task &amp; Deadline Detection</h3>
+            <p>Extract tasks and deadlines automatically.</p>
+          </div>
+          <div className="p-6 bg-gray-50 rounded-lg shadow">
+            <h3 className="font-semibold text-xl mb-2">Opportunity Alerts</h3>
+            <p>Identify key opportunities in your inbox.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="relative z-10 py-20 px-4 bg-gray-100 text-blue-900">
+        <div className="max-w-6xl mx-auto text-center mb-12">
+          <h2 className="text-3xl font-bold">How It Works</h2>
+          <p className="mt-4 text-lg">
+            See how our AI simplifies your email management.
+          </p>
+        </div>
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="p-6 bg-white rounded-lg shadow">
+            <h4 className="font-semibold text-xl mb-2">1. Connect Your Email</h4>
+            <p>Securely sync your inbox.</p>
+          </div>
+          <div className="p-6 bg-white rounded-lg shadow">
+            <h4 className="font-semibold text-xl mb-2">2. AI Analyzes Your Inbox</h4>
+            <p>AI reads and processes your emails.</p>
+          </div>
+          <div className="p-6 bg-white rounded-lg shadow">
+            <h4 className="font-semibold text-xl mb-2">3. Get Insights &amp; Tasks</h4>
+            <p>View summaries, tasks, and alerts.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Fallback small hero end spacing */}
+      <div className="h-32"></div>
     </div>
   );
 }

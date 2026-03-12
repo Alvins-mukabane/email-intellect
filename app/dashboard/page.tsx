@@ -1,6 +1,8 @@
+export const runtime = 'nodejs';
+
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
-import { analyzeInbox } from './actions';
+import { AnalyzeButton } from './AnalyzeButton';
 
 export default async function DashboardPage() {
   const cookieStore = await cookies();
@@ -31,11 +33,7 @@ export default async function DashboardPage() {
             <h1 className="text-3xl font-bold tracking-tight">Executive Overview</h1>
             <p className="text-gray-400">AI-processed intelligence from your inbox.</p>
           </div>
-          <form action={analyzeInbox}>
-            <button className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-xl font-semibold transition-all shadow-lg shadow-blue-500/20">
-              Analyze My Inbox
-            </button>
-          </form>
+          <AnalyzeButton />
         </div>
 
         {/* Intelligence Grid */}

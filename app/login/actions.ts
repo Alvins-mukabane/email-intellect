@@ -29,11 +29,21 @@ export async function signup(formData: FormData) {
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;
 
-  const { error } = await supabase.auth.signUp({ email, password });
-  if (error) throw error;
-  redirect('/dashboard');
+  try {
+    const { error } = await supabase.auth.signUp({ email, password });
+    if (error) throw error;
+    redirect('/dashboard');
+  } catch (err: any) {
+    if (
+      err.message.includes('already registered') ||
+      err.status === 422
+    ) {
+      // Redirect to login page with a specific query param
+      redirect(`/login?error=user_exists&email=${encodeURIComponent(email)}`);
+    }
+    redirect('/login?error=auth_failed');
+  }
 }
-
 export async function login(formData: FormData) {
   const supabase = await getSupabase();
   const email = formData.get('email') as string;

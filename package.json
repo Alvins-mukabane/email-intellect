@@ -15,7 +15,8 @@
     "@tsparticles/engine": "^3.9.1",
     "@tsparticles/react": "^3.0.0",
     "@tsparticles/slim": "^3.9.1",
-    "@vercel/analytics": "^2.0.0",
+    "@vercel/analytics": "^1.4.1",
+    "@vercel/speed-insights": "^2.0.0",
     "dotenv": "^17.3.1",
     "framer-motion": "^12.35.2",
     "googleapis": "^171.4.0",
@@ -35,5 +36,8 @@
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "overrides": {
+    "serialize-javascript": ">=7.0.3"
   }
 }

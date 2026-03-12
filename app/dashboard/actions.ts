@@ -1,4 +1,4 @@
-'use server';
+'use server'; // <--- MUST be the first line
 
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
@@ -29,45 +29,59 @@ export async function getSupabaseServer() {
 }
 
 export async function analyzeInbox() {
-  const supabase = await getSupabaseServer();
-  
-  // Get the Google Access Token from the current session
-  const { data: { session } } = await supabase.auth.getSession();
-  const token = session?.provider_token;
+   // 'use server'; <--- DELETE THIS
+   console.log('analyzeInbox: started');
 
-  if (!session || !token) throw new Error("Google Token Missing. Try logging out and in again.");
+  try {
+    const supabase = await getSupabaseServer();
+    
+    // Get the Google Access Token from the current session
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.provider_token;
 
-  // Fetch the 5 most recent emails
-  const messages = await listRecentEmails(token, 5);
-  const gmail = await getGmailClient(token);
+    if (!session || !token) {
+      console.error('analyzeInbox: missing session or token', { hasSession: !!session, hasToken: !!token });
+      throw new Error('Google Token Missing. Try logging out and in again.');
+    }
 
-  for (const msg of messages) {
-    const detail = await gmail.users.messages.get({ userId: 'me', id: msg.id! });
-    const bodySnippet = detail.data.snippet || "";
-    const subject = detail.data.payload?.headers?.find(h => h.name === 'Subject')?.value || "No Subject";
+    // Fetch the 5 most recent emails
+    const messages = await listRecentEmails(token, 5);
+    const gmail = await getGmailClient(token);
 
-    // Trigger the AI Agent to summarize and extract tasks
-    const aiAnalysis = await analyzeEmailContent(bodySnippet);
+    for (const msg of messages) {
+      const detail = await gmail.users.messages.get({ userId: 'me', id: msg.id! });
+      const bodySnippet = detail.data.snippet || "";
+      const subject = detail.data.payload?.headers?.find(h => h.name === 'Subject')?.value || "No Subject";
 
-    // Save the structured insights to your Cloud Database
-    await supabase.from('emails').upsert({
-      gmail_id: msg.id,
-      user_id: session.user.id,
-      subject: subject,
-      body_preview: bodySnippet,
-      summary: aiAnalysis.summary,
-      priority: aiAnalysis.priority,
-      action_items: JSON.stringify(aiAnalysis.action_items), // Store as string for the MVP
-      is_opportunity: aiAnalysis.opportunity || false
-    }, { onConflict: 'gmail_id' });
+      // Trigger the AI Agent to summarize and extract tasks
+      const aiAnalysis = await analyzeEmailContent(bodySnippet);
+
+      // Save the structured insights to your Cloud Database
+      await supabase.from('emails').upsert({
+        gmail_id: msg.id,
+        user_id: session.user.id,
+        subject: subject,
+        body_preview: bodySnippet,
+        summary: aiAnalysis.summary,
+        priority: aiAnalysis.priority,
+        action_items: JSON.stringify(aiAnalysis.action_items), // Store as string for the MVP
+        is_opportunity: aiAnalysis.opportunity || false
+      }, { onConflict: 'gmail_id' });
+    }
+
+    console.log('analyzeInbox: completed, revalidating /dashboard');
+
+    // Refresh the UI to show new data immediately
+    revalidatePath('/dashboard');
+  } catch (err) {
+    console.error('analyzeInbox: error', err);
+    throw err;
   }
-
-  // Refresh the UI to show new data immediately
-  revalidatePath('/dashboard');
 }
 
 export async function signInWithGoogle() {
-  const supabase = await getSupabaseServer();
+   // 'use server'; <--- DELETE THIS
+   const supabase = await getSupabaseServer();
   
   // DevOps Trick: Automatically detect if we are on Vercel or Localhost
   const getURL = () => {

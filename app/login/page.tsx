@@ -1,63 +1,67 @@
+import Link from 'next/link';
 import { login, signup, signInWithGoogle } from './actions';
 
-export default function LoginPage() {
+export default async function LoginPage(props: {
+  searchParams: Promise<{ error?: string; email?: string }>;
+}) {
+  const searchParams = await props.searchParams;
+  const error = searchParams.error;
+  const email = searchParams.email;
+
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-8 bg-[#161616] p-10 rounded-2xl border border-white/10 shadow-2xl">
+    <div className="min-h-screen bg-gradient-to-b from-[#f0f7ff] to-white flex items-center justify-center p-6">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-blue-50 p-8 space-y-6">
+        
         <div className="text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
-            AI Email Agent
-          </h1>
-          <p className="mt-2 text-gray-400">Your AI-powered executive assistant</p>
+          <h1 className="text-3xl font-extrabold text-[#1e3a8a] tracking-tight">Welcome Back</h1>
+          <p className="text-slate-500 mt-2">Manage your inbox with intelligence</p>
         </div>
 
-        <div className="space-y-4">
-          {/* Wrap the Google button in its own form */}
-          <form>
-            <button
-              formAction={signInWithGoogle}
-              className="w-full flex items-center justify-center gap-3 bg-white text-black font-bold py-3 rounded-xl hover:bg-gray-200 transition-colors"
-            >
-              <img src="https://www.google.com/favicon.ico" className="w-5 h-5" alt="Google" />
-              Continue with Google
-            </button>
-          </form>
-
-          <div className="relative flex items-center py-2">
-            <div className="flex-grow border-t border-white/10"></div>
-            <span className="flex-shrink mx-4 text-gray-500 text-sm">or</span>
-            <div className="flex-grow border-t border-white/10"></div>
-          </div>
-
-          {/* Email/Password form */}
-          <form className="space-y-4">
-            <input
-              name="email"
-              type="email"
-              placeholder="Email"
-              required
-              className="w-full px-4 py-3 rounded-xl bg-black border border-white/10"
-            />
-            <input
-              name="password"
-              type="password"
-              placeholder="Password"
-              required
-              className="w-full px-4 py-3 rounded-xl bg-black border border-white/10"
-            />
-            <div className="flex gap-4">
-              <button
-                formAction={login}
-                className="flex-1 border border-white/10 py-3 rounded-xl hover:bg-white/5"
-              >
-                Sign In
-              </button>
-              <button formAction={signup} className="flex-1 bg-blue-600 py-3 rounded-xl">
-                Register
-              </button>
+        {/* --- CUSTOM DIALOG BOX (Matching your card style) --- */}
+        {error === 'user_exists' && (
+          <div className="relative overflow-hidden bg-blue-50 border-l-4 border-[#3b82f6] p-6 rounded-xl animate-in fade-in slide-in-from-top-4 duration-300">
+            <div className="flex items-start">
+              <div className="flex-shrink-0">
+                {/* A friendly checkmark icon */}
+                <svg className="h-6 w-6 text-[#3b82f6]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-bold text-[#1e3a8a]">Account already found!</h3>
+                <div className="mt-2 text-sm text-slate-600">
+                  <p>It looks like <strong>{email}</strong> is already part of the family.</p>
+                </div>
+                <div className="mt-4">
+                  <Link 
+                    href="/dashboard"
+                    className="inline-flex items-center px-4 py-2 bg-[#3b82f6] text-white text-sm font-semibold rounded-lg hover:bg-[#2563eb] transition-colors shadow-md"
+                  >
+                    Go to Dashboard
+                    <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
+                  </Link>
+                </div>
+              </div>
             </div>
-          </form>
-        </div>
+          </div>
+        )}
+
+        {error === 'auth_failed' && (
+          <div className="p-4 mb-4 text-sm text-red-800 bg-red-100 border border-red-200 rounded-lg">
+            Authentication failed. Please check your credentials.
+          </div>
+        )}
+
+        {/* --- YOUR LOGIN FORM CONTINUES --- */}
+        <form className="space-y-4">
+          <input name="email" type="email" placeholder="Email" required className="w-full p-2 border rounded" />
+          <input name="password" type="password" placeholder="Password" required className="w-full p-2 border rounded" />
+          
+          <div className="flex gap-2">
+            <button formAction={login} className="flex-1 px-4 py-2 text-white bg-blue-600 rounded">Sign In</button>
+            <button formAction={signup} className="flex-1 px-4 py-2 text-white bg-green-600 rounded">Register</button>
+          </div>
+        </form>
       </div>
     </div>
   );
