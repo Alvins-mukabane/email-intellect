@@ -45,7 +45,7 @@ export async function login(formData: FormData) {
 }
 
 export async function signInWithGoogle() {
-  const supabase = await getSupabase();
+  const supabase = await getSupabase(); // Using the helper we created earlier
   
   const getURL = () => {
     let url = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000/';
@@ -57,7 +57,10 @@ export async function signInWithGoogle() {
     provider: 'google',
     options: {
       scopes: 'https://www.googleapis.com/auth/gmail.readonly',
-      queryParams: { access_type: 'offline', prompt: 'consent' },
+      queryParams: {
+        access_type: 'offline',
+        prompt: 'consent',
+      },
       redirectTo: `${getURL()}api/auth/callback`,
     },
   });
