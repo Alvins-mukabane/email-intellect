@@ -1,10 +1,20 @@
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { analyzeInbox } from './actions';
 
 export default async function DashboardPage() {
-  const supabase = createServerComponentClient({ cookies });
+  const cookieStore = await cookies();
   
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) { return cookieStore.get(name)?.value },
+      },
+    }
+  );
+
   // Fetch processed emails from Cloud DB
   const { data: emails } = await supabase
     .from('emails')
@@ -18,7 +28,7 @@ export default async function DashboardPage() {
         {/* Header Section */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold">Executive Overview</h1>
+            <h1 className="text-3xl font-bold tracking-tight">Executive Overview</h1>
             <p className="text-gray-400">AI-processed intelligence from your inbox.</p>
           </div>
           <form action={analyzeInbox}>
@@ -31,25 +41,40 @@ export default async function DashboardPage() {
         {/* Intelligence Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {emails?.map((email) => (
-            <div key={email.id} className="bg-[#161616] border border-white/10 p-6 rounded-2xl hover:border-blue-500/50 transition-colors">
+            <div
+              key={email.id}
+              className="bg-[#161616] border border-white/10 p-6 rounded-2xl hover:border-blue-500/50 transition-colors group"
+            >
               <div className="flex justify-between items-start mb-4">
-                <span className={`text-xs font-bold px-2 py-1 rounded ${
-                  email.priority === 'High' ? 'bg-red-500/20 text-red-400' : 'bg-gray-500/20 text-gray-400'
-                }`}>
-                  {email.priority}
+                <span
+                  className={`text-[10px] uppercase tracking-widest font-bold px-2 py-1 rounded ${
+                    email.priority === 'High'
+                      ? 'bg-red-500/20 text-red-400'
+                      : 'bg-gray-500/20 text-gray-400'
+                  }`}
+                >
+                  {email.priority || 'Low'}
                 </span>
-                <span className="text-gray-500 text-xs">{new Date(email.created_at).toLocaleDateString()}</span>
+                <span className="text-gray-600 text-xs">
+                  {new Date(email.created_at).toLocaleDateString()}
+                </span>
               </div>
               
-              <h3 className="font-bold truncate mb-2">{email.subject}</h3>
-              <p className="text-sm text-gray-400 line-clamp-2 mb-4">{email.summary}</p>
+              <h3 className="font-bold truncate mb-2 group-hover:text-blue-400 transition-colors">
+                {email.subject}
+              </h3>
+              <p className="text-sm text-gray-400 line-clamp-2 mb-4 leading-relaxed">
+                {email.summary}
+              </p>
               
               {email.action_items && (
-                <div className="space-y-2">
-                  <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider">Tasks Identified</p>
+                <div className="space-y-2 pt-4 border-t border-white/5">
+                  <p className="text-[10px] font-bold text-blue-500 uppercase tracking-wider">
+                    Action Items
+                  </p>
                   {JSON.parse(email.action_items).map((item: string, i: number) => (
                     <div key={i} className="flex items-center gap-2 text-sm text-gray-300">
-                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                      <div className="w-1 h-1 rounded-full bg-blue-500" />
                       {item}
                     </div>
                   ))}
