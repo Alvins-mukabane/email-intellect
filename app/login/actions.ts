@@ -1,58 +1,55 @@
 'use server';
 
-import { createServerActionClient } from '@supabase/auth-helpers-nextjs';
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
-import { supabase } from '../../lib/supabase';
 import { redirect } from 'next/navigation';
 
+// Helper function to create the server-side client
+async function getSupabase() {
+  const cookieStore = await cookies();
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) { return cookieStore.get(name)?.value },
+        set(name: string, value: string, options: CookieOptions) {
+          cookieStore.set({ name, value, ...options })
+        },
+        remove(name: string, options: CookieOptions) {
+          cookieStore.set({ name, value: '', ...options })
+        },
+      },
+    }
+  );
+}
+
 export async function signup(formData: FormData) {
+  const supabase = await getSupabase();
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;
 
-  const { error } = await supabase.auth.signUp({
-    email,
-    password,
-  });
-
-  if (error) {
-    console.error('Sign up error:', error.message);
-    return;
-  }
-
-  // After signing up, Supabase usually requires email confirmation
-  // unless you disable it in the dashboard.
+  const { error } = await supabase.auth.signUp({ email, password });
+  if (error) throw error;
   redirect('/dashboard');
 }
 
 export async function login(formData: FormData) {
+  const supabase = await getSupabase();
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
-
-  if (error) {
-    console.error('Login error:', error.message);
-    return;
-  }
-
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) throw error;
   redirect('/dashboard');
 }
+
 export async function signInWithGoogle() {
-  const supabase = createServerActionClient({ cookies });
+  const supabase = await getSupabase();
   
-  // Use a variable for the site URL to make it easier to switch between local and prod
   const getURL = () => {
-    let url =
-      process?.env?.NEXT_PUBLIC_SITE_URL ?? // Set this in Vercel later
-      process?.env?.NEXT_PUBLIC_VERCEL_URL ?? // Automatically set by Vercel
-      'http://localhost:3000/';
-    // Make sure to include `https://` when not localhost.
-    url = url.includes('http') ? url : `https://${url}`;
-    // Make sure to include a trailing `/`.
-    url = url.charAt(url.length - 1) === '/' ? url : `${url}/`;
+    let url = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000/';
+    url = url.endsWith('/') ? url : `${url}/`;
     return url;
   };
 
@@ -60,14 +57,11 @@ export async function signInWithGoogle() {
     provider: 'google',
     options: {
       scopes: 'https://www.googleapis.com/auth/gmail.readonly',
-      queryParams: {
-        access_type: 'offline',
-        prompt: 'consent',
-      },
-      redirectTo: `${getURL()}api/auth/callback`, // This is the fix
+      queryParams: { access_type: 'offline', prompt: 'consent' },
+      redirectTo: `${getURL()}api/auth/callback`,
     },
   });
 
   if (error) throw error;
-  if (data.url) return redirect(data.url);
+  if (data.url) redirect(data.url);
 }

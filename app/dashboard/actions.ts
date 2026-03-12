@@ -1,34 +1,35 @@
 'use server';
 
-import { createServerClient } from '@supabase/auth-helpers-nextjs';
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { listRecentEmails, getGmailClient } from '@/lib/gmail';
 import { analyzeEmailContent } from '@/lib/ai';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
-export async function analyzeInbox() {
+export async function getSupabaseServer() {
   const cookieStore = await cookies();
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+        set(name: string, value: string, options: CookieOptions) {
+          cookieStore.set({ name, value, ...options });
+        },
+        remove(name: string, options: CookieOptions) {
+          cookieStore.set({ name, value: '', ...options });
+        },
+      },
+    }
+  );
+}
 
-  if (!supabaseUrl || !supabaseKey) {
-    throw new Error('Missing Supabase environment variables.');
-  }
-
-  const supabase = createServerClient(supabaseUrl, supabaseKey, {
-    cookies: {
-      get(name: string) {
-        return cookieStore.get(name)?.value;
-      },
-      set(name: string, value: string, options: any) {
-        cookieStore.set({ name, value, ...options });
-      },
-      remove(name: string, options: any) {
-        cookieStore.set({ name, value: '', ...options, maxAge: 0 });
-      },
-    },
-  });
+export async function analyzeInbox() {
+  const supabase = await getSupabaseServer();
   
   // Get the Google Access Token from the current session
   const { data: { session } } = await supabase.auth.getSession();
@@ -67,27 +68,7 @@ export async function analyzeInbox() {
 }
 
 export async function signInWithGoogle() {
-  const cookieStore = await cookies();
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!supabaseUrl || !supabaseKey) {
-    throw new Error('Missing Supabase environment variables.');
-  }
-
-  const supabase = createServerClient(supabaseUrl, supabaseKey, {
-    cookies: {
-      get(name: string) {
-        return cookieStore.get(name)?.value;
-      },
-      set(name: string, value: string, options: any) {
-        cookieStore.set({ name, value, ...options });
-      },
-      remove(name: string, options: any) {
-        cookieStore.set({ name, value: '', ...options, maxAge: 0 });
-      },
-    },
-  });
+  const supabase = await getSupabaseServer();
   
   // DevOps Trick: Automatically detect if we are on Vercel or Localhost
   const getURL = () => {
