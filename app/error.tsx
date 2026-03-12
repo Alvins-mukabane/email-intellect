@@ -9,35 +9,6 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[#0a0a0a] text-white p-6">
-      <div className="bg-[#161616] border border-white/10 p-8 rounded-2xl max-w-sm w-full text-center shadow-2xl">
-        <h2 className="text-2xl font-bold mb-4">Connection Issue</h2>
-        <p className="text-gray-400 mb-6 text-sm">
-          We couldn't reach the server. This usually happens due to a network glitch.
-        </p>
-        <button
-          onClick={() => reset()}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-all"
-        >
-          Try Again
-        </button>
-      </div>
-    </div>
-  );
-}
-
-'use client';
-
-import { useEffect } from 'react';
-
-export default function GlobalError({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
   useEffect(() => {
     // In a real-world app, you'd log this to a service like Sentry or LogRocket
     console.error('CRITICAL_APP_ERROR:', error);

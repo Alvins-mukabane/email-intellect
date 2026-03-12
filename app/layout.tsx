@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Analytics } from '@vercel/analytics/next';
 import NetworkGuard from '@/components/NetworkGuard';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -7,6 +8,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <NetworkGuard /> {/* This watches the network globally */}
         {children}
+        <Analytics />
       </body>
     </html>
   );

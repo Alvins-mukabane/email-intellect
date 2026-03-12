@@ -64,7 +64,6 @@ export async function analyzeInbox() {
 
   // Refresh the UI to show new data immediately
   revalidatePath('/dashboard');
-  return { success: true };
 }
 
 export async function signInWithGoogle() {
