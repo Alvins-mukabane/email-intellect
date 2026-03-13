@@ -49,3 +49,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .env*.local
+
+# Figma export / design artifacts
+/designs/**/node_modules/
+/designs/**/dist/
+/designs/**/build/
