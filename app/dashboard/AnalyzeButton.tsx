@@ -1,14 +1,14 @@
 'use client';
 
 import { useTransition } from 'react';
-import { analyzeInbox } from './actions';
+import { analyzeEmailsAction } from './actions';
 
 export function AnalyzeButton() {
   const [isPending, startTransition] = useTransition();
 
   const handleAnalyze = () => {
     startTransition(async () => {
-      await analyzeInbox();
+      await analyzeEmailsAction();
     });
   };
 

@@ -28,19 +28,18 @@ export async function getSupabaseServer() {
   );
 }
 
-export async function analyzeInbox() {
-   // 'use server'; <--- DELETE THIS
-   console.log('analyzeInbox: started');
+export async function analyzeEmailsAction() {
+  console.log('analyzeEmailsAction: started');
 
   try {
     const supabase = await getSupabaseServer();
-    
+
     // Get the Google Access Token from the current session
     const { data: { session } } = await supabase.auth.getSession();
     const token = session?.provider_token;
 
     if (!session || !token) {
-      console.error('analyzeInbox: missing session or token', { hasSession: !!session, hasToken: !!token });
+      console.error('analyzeEmailsAction: missing session or token', { hasSession: !!session, hasToken: !!token });
       throw new Error('Google Token Missing. Try logging out and in again.');
     }
 
@@ -69,20 +68,21 @@ export async function analyzeInbox() {
       }, { onConflict: 'gmail_id' });
     }
 
-    console.log('analyzeInbox: completed, revalidating /dashboard');
-
-    // Refresh the UI to show new data immediately
+    // THE FIX: Tell Next.js to refresh the UI immediately
     revalidatePath('/dashboard');
+    revalidatePath('/tasks');
+    revalidatePath('/opportunities');
+
+    return { success: true };
   } catch (err) {
-    console.error('analyzeInbox: error', err);
-    throw err;
+    console.error('analyzeEmailsAction: error', err);
+    return { success: false };
   }
 }
 
 export async function signInWithGoogle() {
-   // 'use server'; <--- DELETE THIS
-   const supabase = await getSupabaseServer();
-  
+  const supabase = await getSupabaseServer();
+
   // DevOps Trick: Automatically detect if we are on Vercel or Localhost
   const getURL = () => {
     let url =
