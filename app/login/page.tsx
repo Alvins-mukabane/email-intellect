@@ -9,36 +9,63 @@ export default async function LoginPage(props: {
   const email = searchParams.email;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#f0f7ff] to-white flex items-center justify-center p-6">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-blue-50 p-8 space-y-6">
-        
-        <div className="text-center">
-          <h1 className="text-3xl font-extrabold text-[#1e3a8a] tracking-tight">Welcome Back</h1>
-          <p className="text-slate-500 mt-2">Manage your inbox with intelligence</p>
+    <div className="pt-32 pb-24 px-6 min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="bg-white p-10 rounded-3xl shadow-xl border border-slate-100 max-w-md w-full relative z-10">
+        <div className="flex justify-center mb-8">
+          <div className="bg-blue-600 p-4 rounded-2xl text-white shadow-lg">
+            <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"
+                fill="currentColor"
+              />
+              <path
+                d="M12 7C10.34 7 9 8.34 9 10C9 11.66 10.34 13 12 13C13.66 13 15 11.66 15 10C15 8.34 13.66 7 12 7ZM12 11C11.45 11 11 10.55 11 10C11 9.45 11.45 9 12 9C12.55 9 13 9.45 13 10C13 10.55 12.55 11 12 11Z"
+                fill="currentColor"
+              />
+            </svg>
+          </div>
         </div>
 
-        {/* --- CUSTOM DIALOG BOX (Matching your card style) --- */}
+        <h1 className="text-3xl font-extrabold text-slate-800 mb-2 text-center">Welcome Back</h1>
+        <p className="text-slate-500 font-medium text-center mb-10">
+          Sign in to access your intelligent agent.
+        </p>
+
         {error === 'user_exists' && (
-          <div className="relative overflow-hidden bg-blue-50 border-l-4 border-[#3b82f6] p-6 rounded-xl animate-in fade-in slide-in-from-top-4 duration-300">
+          <div className="relative overflow-hidden bg-blue-50 border-l-4 border-blue-400 p-6 rounded-xl animate-in fade-in slide-in-from-top-4 duration-300 mb-4">
             <div className="flex items-start">
               <div className="flex-shrink-0">
-                {/* A friendly checkmark icon */}
-                <svg className="h-6 w-6 text-[#3b82f6]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
               </div>
               <div className="ml-3">
-                <h3 className="text-sm font-bold text-[#1e3a8a]">Account already found!</h3>
+                <h3 className="text-sm font-bold text-blue-800">Account already found!</h3>
                 <div className="mt-2 text-sm text-slate-600">
-                  <p>It looks like <strong>{email}</strong> is already part of the family.</p>
+                  <p>
+                    It looks like <strong>{email}</strong> is already part of the family.
+                  </p>
                 </div>
                 <div className="mt-4">
-                  <Link 
+                  <Link
                     href="/dashboard"
-                    className="inline-flex items-center px-4 py-2 bg-[#3b82f6] text-white text-sm font-semibold rounded-lg hover:bg-[#2563eb] transition-colors shadow-md"
+                    className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-md"
                   >
                     Go to Dashboard
-                    <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
+                    <svg
+                      className="ml-2 w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                    </svg>
                   </Link>
                 </div>
               </div>
@@ -52,17 +79,83 @@ export default async function LoginPage(props: {
           </div>
         )}
 
-        {/* --- YOUR LOGIN FORM CONTINUES --- */}
         <form className="space-y-4">
-          <input name="email" type="email" placeholder="Email" required className="w-full p-2 border rounded" />
-          <input name="password" type="password" placeholder="Password" required className="w-full p-2 border rounded" />
-          
-          <div className="flex gap-2">
-            <button formAction={login} className="flex-1 px-4 py-2 text-white bg-blue-600 rounded">Sign In</button>
-            <button formAction={signup} className="flex-1 px-4 py-2 text-white bg-green-600 rounded">Register</button>
+          <input
+            name="email"
+            type="email"
+            placeholder="Email"
+            required
+            className="w-full p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            required
+            className="w-full p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            formAction={login}
+            className="w-full flex items-center justify-center gap-3 bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-xl transition-all"
+          >
+            Sign in with email
+          </button>
+          <button
+            formAction={signup}
+            className="w-full flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all"
+          >
+            Create an account
+          </button>
+
+          <div className="flex items-center justify-center gap-3 text-sm text-slate-500">
+            <span className="h-px w-14 bg-slate-200" />
+            <span>or</span>
+            <span className="h-px w-14 bg-slate-200" />
           </div>
+
+          <button
+            formAction={signInWithGoogle}
+            className="w-full flex items-center justify-center gap-3 bg-white border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 font-bold py-4 rounded-xl transition-all"
+          >
+            <svg viewBox="0 0 24 24" className="w-6 h-6">
+              <path
+                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                fill="#4285F4"
+              />
+              <path
+                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                fill="#34A853"
+              />
+              <path
+                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                fill="#FBBC05"
+              />
+              <path
+                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                fill="#EA4335"
+              />
+              <path d="M1 1h22v22H1z" fill="none" />
+            </svg>
+            Continue with Google
+          </button>
         </form>
+
+        <p className="mt-8 text-center text-sm text-slate-500 font-medium">
+          By signing in, you agree to our{' '}
+          <a href="#" className="text-blue-600 hover:underline">
+            Terms of Service
+          </a>{' '}
+          and{' '}
+          <a href="#" className="text-blue-600 hover:underline">
+            Privacy Policy
+          </a>
+          .
+        </p>
       </div>
+
+      {/* Decorative background blobs */}
+      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-blue-400/20 rounded-full blur-3xl pointer-events-none -translate-x-1/2 -translate-y-1/2"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-indigo-400/20 rounded-full blur-3xl pointer-events-none translate-x-1/2 translate-y-1/2"></div>
     </div>
   );
 }

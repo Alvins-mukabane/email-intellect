@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 
 export default function NetworkGuard() {
-  const [isOffline, setIsOffline] = useState(false);
+  const [isOffline, setIsOffline] = useState(() => (typeof navigator !== 'undefined' ? !navigator.onLine : false));
 
   useEffect(() => {
     const handleOnline = () => setIsOffline(false);
@@ -11,9 +11,6 @@ export default function NetworkGuard() {
 
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
-
-    // Initial check
-    if (!navigator.onLine) setIsOffline(true);
 
     return () => {
       window.removeEventListener('online', handleOnline);

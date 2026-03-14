@@ -1,6 +1,5 @@
-'use client';
-
-import { Check, Mail, Plus, CheckCircle2 } from 'lucide-react';
+import { Check, Plus, CheckCircle2 } from 'lucide-react';
+import Link from 'next/link';
 import { ImageWithFallback } from '@/app/dashboard/components/ImageWithFallback';
 
 export function Hero() {
@@ -28,9 +27,11 @@ export function Hero() {
             <p className="text-[2.5vw] sm:text-lg lg:text-xl text-blue-100 mb-6 sm:mb-10 max-w-[480px] font-medium leading-relaxed pr-4">
               Let AI manage your emails. Get summaries, task lists, and key opportunities instantly.
             </p>
-            <button className="bg-blue-700 hover:bg-blue-800 text-white font-bold text-[3vw] sm:text-lg px-4 sm:px-8 py-2 sm:py-4 rounded-xl shadow-[0_8px_30px_rgb(29,78,216,0.3)] transition-all hover:-translate-y-1">
-              Connect Gmail
-            </button>
+            <Link href="/welcome">
+              <button className="bg-blue-700 hover:bg-blue-800 text-white font-bold text-[3vw] sm:text-lg px-4 sm:px-8 py-2 sm:py-4 rounded-xl shadow-[0_8px_30px_rgb(29,78,216,0.3)] transition-all hover:-translate-y-1">
+                Connect Gmail
+              </button>
+            </Link>
             
             <div className="mt-8 sm:mt-16">
               <p className="text-[2vw] sm:text-sm font-semibold text-blue-200/80 mb-2 sm:mb-4 tracking-wider uppercase">Trusted by professionals worldwide</p>
@@ -57,7 +58,7 @@ export function Hero() {
 
             {/* Today's Summary Card */}
             <div className="absolute top-[15%] sm:top-[25%] left-0 sm:left-[5%] bg-white p-2 sm:p-5 rounded-lg sm:rounded-2xl shadow-2xl w-[120px] sm:w-[260px] transform hover:scale-105 transition-transform duration-300 z-30">
-              <h3 className="text-blue-600 font-bold mb-1 sm:mb-3 border-b pb-1 sm:pb-2 text-[2.5vw] sm:text-sm">Today's Summary</h3>
+              <h3 className="text-blue-600 font-bold mb-1 sm:mb-3 border-b pb-1 sm:pb-2 text-[2.5vw] sm:text-sm">Today&apos;s Summary</h3>
               <div className="space-y-1 sm:space-y-3">
                 <div className="flex items-center gap-1 sm:gap-3 text-gray-700 text-[2.5vw] sm:text-sm font-medium">
                   <div className="bg-blue-100 p-0.5 sm:p-1.5 rounded-full"><Plus className="w-2 h-2 sm:w-3.5 sm:h-3.5 text-blue-600"/></div>

@@ -33,10 +33,12 @@ export async function signup(formData: FormData) {
     const { error } = await supabase.auth.signUp({ email, password });
     if (error) throw error;
     redirect('/dashboard');
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const error = err as { message?: string; status?: number };
+
     if (
-      err.message.includes('already registered') ||
-      err.status === 422
+      error.message?.includes('already registered') ||
+      error.status === 422
     ) {
       // Redirect to login page with a specific query param
       redirect(`/login?error=user_exists&email=${encodeURIComponent(email)}`);
