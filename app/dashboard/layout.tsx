@@ -11,6 +11,8 @@ import {
   Power,
   Search,
   Bell,
+  User,
+  Shield,
 } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -18,9 +20,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { path: '/emails', label: 'Emails', icon: Mail },
-    { path: '/tasks', label: 'Tasks', icon: CheckSquare },
-    { path: '/opportunities', label: 'Opportunities', icon: Briefcase },
+    { path: '/dashboard/emails', label: 'Emails', icon: Mail },
+    { path: '/dashboard/tasks', label: 'Tasks', icon: CheckSquare },
+    { path: '/dashboard/opportunities', label: 'Opportunities', icon: Briefcase },
+    { path: '/dashboard/profile', label: 'Profile', icon: User },
+    { path: '/dashboard/security', label: 'Security', icon: Shield },
   ];
 
   return (

@@ -24,35 +24,36 @@ async function getSupabase() {
   );
 }
 
-export async function signup(formData: FormData) {
-  const supabase = await getSupabase();
-  const email = formData.get('email') as string;
-  const password = formData.get('password') as string;
-
-  try {
-    const { error } = await supabase.auth.signUp({ email, password });
-    if (error) throw error;
-    redirect('/dashboard');
-  } catch (err: unknown) {
-    const error = err as { message?: string; status?: number };
-
-    if (
-      error.message?.includes('already registered') ||
-      error.status === 422
-    ) {
-      // Redirect to login page with a specific query param
-      redirect(`/login?error=user_exists&email=${encodeURIComponent(email)}`);
-    }
-    redirect('/login?error=auth_failed');
-  }
-}
 export async function login(formData: FormData) {
   const supabase = await getSupabase();
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) throw error;
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+  if (error) {
+    redirect('/login?error=auth_failed');
+  }
+
+  // Check if email is verified
+  if (data.user && !data.user.email_confirmed_at) {
+    // Sign out the user since email is not verified
+    await supabase.auth.signOut();
+    redirect('/verify-email?email=' + encodeURIComponent(email) + '&error=not_verified');
+  }
+
+  // Check if 2FA is enabled
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('two_factor_enabled')
+    .eq('id', data.user.id)
+    .single();
+
+  if (profile?.two_factor_enabled) {
+    // Redirect to 2FA verification page
+    redirect('/verify-2fa');
+  }
+
   redirect('/dashboard');
 }
 

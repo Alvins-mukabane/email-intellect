@@ -65,7 +65,9 @@ export async function signup(formData: FormData) {
       // Redirect to login page with a specific query param
       redirect(`/login?error=user_exists&email=${encodeURIComponent(email)}`);
     }
-export async function signInWithGoogle() {
+    redirect('/login?error=auth_failed');
+  }
+}
   const supabase = await getSupabase();
 
   const getURL = () => {
