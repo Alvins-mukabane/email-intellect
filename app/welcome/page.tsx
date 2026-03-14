@@ -35,7 +35,7 @@ export default function Welcome() {
                </div>
             </div>
 
-            <Link href="/login" className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 bg-white border-2 border-slate-200 hover:border-blue-500 rounded-2xl text-slate-700 hover:text-blue-600 font-bold text-lg shadow-sm hover:shadow-lg transition-all group">
+            <Link href="/signup" className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 bg-white border-2 border-slate-200 hover:border-blue-500 rounded-2xl text-slate-700 hover:text-blue-600 font-bold text-lg shadow-sm hover:shadow-lg transition-all group">
                <div className="w-6 h-6 bg-red-100 rounded text-red-500 flex items-center justify-center font-bold text-xs">G</div>
                Connect Gmail Account
                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />

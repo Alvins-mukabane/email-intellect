@@ -27,9 +27,9 @@ export function Hero() {
             <p className="text-[2.5vw] sm:text-lg lg:text-xl text-blue-100 mb-6 sm:mb-10 max-w-[480px] font-medium leading-relaxed pr-4">
               Let AI manage your emails. Get summaries, task lists, and key opportunities instantly.
             </p>
-            <Link href="/welcome">
+            <Link href="/signup">
               <button className="bg-blue-700 hover:bg-blue-800 text-white font-bold text-[3vw] sm:text-lg px-4 sm:px-8 py-2 sm:py-4 rounded-xl shadow-[0_8px_30px_rgb(29,78,216,0.3)] transition-all hover:-translate-y-1">
-                Connect Gmail
+                Get Started
               </button>
             </Link>
             
