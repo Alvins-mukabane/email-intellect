@@ -7,10 +7,6 @@ import {
   Mail,
   CheckSquare,
   Briefcase,
-  Settings,
-  Power,
-  Search,
-  Bell,
   User,
   Shield,
 } from 'lucide-react';
